@@ -2,7 +2,8 @@
 
 import { useColorMode } from "@/components/ui/color-mode";
 import { MotionValue } from "framer-motion";
-import { MutableRefObject, useEffect, useMemo, useRef } from "react";
+import { MutableRefObject, useEffect, useMemo, useRef, useState } from "react";
+import { NodeButtons } from "./NodeButtons";
 
 // Interfaces
 interface NeuronNode {
@@ -29,6 +30,13 @@ interface Galaxy {
   currentRadius: number;
   baseRotation: { x: number; y: number; z: number };
   rotationVelocity: { x: number; y: number; z: number };
+}
+
+interface ButtonPosition {
+  x: number;
+  y: number;
+  alpha: number;
+  scale: number;
 }
 
 // Animation Helper Functions
@@ -163,7 +171,7 @@ const drawFractalsLayer = (
 
       ctx.beginPath();
       const size = node.scale * 1.5;
-      ctx.rect(-size / 2, -size / 2, size, size); // Draw a square instead of arc for clear rotation
+      ctx.rect(-size / 2, -size / 2, size, size);
       ctx.fill();
 
       ctx.restore();
@@ -184,6 +192,7 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
   const animationRef = useRef<number>();
   const { colorMode } = useColorMode();
   const isDark = colorMode === "dark";
+  const [buttonPositions, setButtonPositions] = useState<ButtonPosition[]>([]);
 
   const galaxies = useMemo(() => {
     const newGalaxies: Galaxy[] = [];
@@ -208,7 +217,7 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
           scale: 0,
           alpha: 0,
           angle: Math.random() * Math.PI * 2,
-          angularVelocity: (Math.random() - 0.5) * 0.05, // Increased velocity
+          angularVelocity: (Math.random() - 0.5) * 0.05,
         });
       }
       newGalaxies.push({
@@ -229,6 +238,19 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
     }
     return newGalaxies;
   }, []);
+
+  // 버튼 위치를 위한 노드 선택
+  const selectedNodeIndices = useMemo(() => {
+    const indices: number[] = [];
+    const totalNodes = galaxies[0].nodes.length;
+    const startOffset = Math.floor(totalNodes * 0.2); // 20% 오프셋으로 시작
+
+    // 5개의 버튼을 위해 균등하게 분포된 인덱스 선택
+    for (let i = 0; i < 5; i++) {
+      indices.push(Math.floor(startOffset + (i * (totalNodes * 0.6)) / 5));
+    }
+    return indices;
+  }, [galaxies]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -282,9 +304,6 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
         y: mouse.y.get(),
       };
 
-      const rect = containerRef.current.getBoundingClientRect();
-      const scale = window.devicePixelRatio || 1;
-
       mouseVelocity.x = mousePos.x - lastMousePosition.x;
       mouseVelocity.y = mousePos.y - lastMousePosition.y;
       lastMousePosition = { ...mousePos };
@@ -311,6 +330,19 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
         canvasHeight,
         FOCAL_LENGTH
       );
+
+      // 버튼 위치 업데이트
+      const newButtonPositions = selectedNodeIndices.map((nodeIndex) => {
+        const node = galaxies[0].nodes[nodeIndex];
+        return {
+          x: node.screenX,
+          y: node.screenY,
+          alpha: Math.pow(node.alpha, 0.7), // 알파값을 부드럽게 조정
+          scale: Math.max(0.8, Math.min(1.2, node.scale)), // 스케일 범위 제한
+        };
+      });
+      setButtonPositions(newButtonPositions);
+
       drawFractalsLayer(ctx, galaxies, MAX_CONNECT_DISTANCE_SQR, false, isDark);
       drawFractalsLayer(ctx, galaxies, MAX_CONNECT_DISTANCE_SQR, true, isDark);
 
@@ -323,21 +355,24 @@ const FractalCanvas = ({ mouse, containerRef }: FractalCanvasProps) => {
       if (animationRef.current) cancelAnimationFrame(animationRef.current);
       if (containerRef.current) resizeObserver.unobserve(containerRef.current);
     };
-  }, [galaxies, isDark, mouse, containerRef]);
+  }, [galaxies, isDark, mouse, containerRef, selectedNodeIndices]);
 
   return (
-    <canvas
-      ref={canvasRef}
-      style={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        height: "100%",
-        zIndex: 1,
-        willChange: "transform",
-      }}
-    />
+    <>
+      <canvas
+        ref={canvasRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
+          zIndex: 1,
+          willChange: "transform",
+        }}
+      />
+      <NodeButtons buttonPositions={buttonPositions} />
+    </>
   );
 };
 
