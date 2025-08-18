@@ -88,8 +88,8 @@ const MainContent = ({ mouse }: MainContentProps) => {
   );
 
   const baseColor = { r: 41, g: 125, b: 131 };
-  const hue = useTransform(mouse.x, [0, 1], [30, 40]);
-  const lightness = useTransform(mouse.y, [0, 1], [0.5, 0.6]);
+  const hue = useTransform(mouse.x, [0, 1], [50, 90]);
+  const lightness = useTransform(mouse.y, [0, 1], [0.4, 0.5]);
 
   const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px, hsl(${hue}, 90%, ${useTransform(
     lightness,
@@ -290,7 +290,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
                   <MotionFlex
                     key={label}
                     display="inline-flex"
-                    bg="#fb981b"
+                    bg="#B6D019"
                     color="white"
                     borderRadius="full"
                     align="center"
