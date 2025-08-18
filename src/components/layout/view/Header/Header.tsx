@@ -18,6 +18,7 @@ import { usePathname } from "next/navigation";
 import DesktopNav from "../DesktopNav";
 import { UtilityIcons } from "./UtilityIcons";
 import SitemapDrawer from "./SitemapDrawer";
+import { AiFillHome } from "react-icons/ai";
 
 const newMenuItems: Menu[] = [
   {
@@ -284,15 +285,22 @@ export const Header = memo(function Header({
                   display="flex"
                   alignItems="center"
                   transition="opacity 0.2s"
+                  aria-label="Go to home"
                 >
-                  <VStack gap={0} align="flex-start">
+                  {/* <VStack gap={0} align="flex-start">
                     <Image
                       src="/images/logo/logo.png"
                       alt="logo"
                       width={logoWidth}
                       height={logoHeight}
                     />
-                  </VStack>
+                  </VStack> */}
+                  <Box as="span" display="inline-flex" alignItems="center">
+                    <AiFillHome
+                      color="#692B13"
+                      size={Number(logoWidth) * 1.2}
+                    />
+                  </Box>
                 </Link>
               </Flex>
               <Flex align="center" gap={2} w="45%">
@@ -308,7 +316,7 @@ export const Header = memo(function Header({
                 />
                 <UtilityIcons
                   menus={menus}
-                  iconColor={iconColor}
+                  iconColor="#451605"
                   onSitemapOpen={() => setIsSitemapDrawerOpen(true)}
                 />
               </Flex>

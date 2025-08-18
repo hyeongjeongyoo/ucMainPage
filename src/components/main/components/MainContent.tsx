@@ -87,14 +87,11 @@ const MainContent = ({ mouse }: MainContentProps) => {
     (normY) => normY * dimensions.win.height - (dimensions.el?.top || 0)
   );
 
-  const baseColor = { r: 41, g: 125, b: 131 };
-  const hue = useTransform(mouse.x, [0, 1], [50, 90]);
+  const baseColor = { r: 251, g: 152, b: 27 };
+  const hue = useTransform(mouse.x, [0, 1], [25, 35]);
   const lightness = useTransform(mouse.y, [0, 1], [0.4, 0.5]);
 
-  const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px, hsl(${hue}, 90%, ${useTransform(
-    lightness,
-    (l) => l * 100
-  )}%), rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1) 70%)`;
+  const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px, #FFC06C 0%, rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1) 70%)`;
 
   const rotateX = useTransform(mouse.y, [0, 1], [8, -8]);
   const rotateY = useTransform(mouse.x, [0, 1], [-8, 8]);
@@ -126,7 +123,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
             fontWeight="900"
             lineHeight="1.1"
             variants={itemVariants}
-            color="#0D344E"
+            color="#EF8832"
           >
             <motion.span
               variants={typingContainerVariants}
@@ -175,6 +172,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
             mt={6}
             fontSize={{ base: "lg", md: "xl" }}
             maxW="2xl"
+            color="#EF8832"
             variants={itemVariants}
           >
             <motion.span
@@ -290,8 +288,8 @@ const MainContent = ({ mouse }: MainContentProps) => {
                   <MotionFlex
                     key={label}
                     display="inline-flex"
-                    bg="#B6D019"
-                    color="white"
+                    bg="#FD7300"
+                    color="#ffffff"
                     borderRadius="full"
                     align="center"
                     py={0}

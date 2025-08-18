@@ -107,10 +107,10 @@ const drawFractalsLayer = (
   isForeground: boolean,
   isDark: boolean
 ) => {
-  const baseHue = 160;
-  const hueRange = -70; // sweep within yellow-green family (~60°–140°)
-  const saturation = "51%";
-  const lightness = isDark ? "45%" : "45%";
+  const baseHue = 20;
+  const hueRange = 0; // fixed hue; gradient second stop uses #FFC06C
+  const saturation = "57%";
+  const lightness = isDark ? "45%" : "65%";
 
   galaxies.forEach((galaxy) => {
     const nodesToDraw = galaxy.nodes.filter((node) =>
@@ -133,22 +133,15 @@ const drawFractalsLayer = (
           const opacity =
             (1 - distSqr / MAX_CONNECT_DISTANCE_SQR) * p1.alpha * p2.alpha;
           if (opacity > 0) {
-            const hue1 = baseHue + (p1.phi / (2 * Math.PI)) * hueRange;
-            const hue2 = baseHue + (p2.phi / (2 * Math.PI)) * hueRange;
+            // Fixed orange gradient from base orange to #FFC06C
             const grad = ctx.createLinearGradient(
               p1.screenX,
               p1.screenY,
               p2.screenX,
               p2.screenY
             );
-            grad.addColorStop(
-              0,
-              `hsla(${hue1}, ${saturation}, ${lightness}, ${opacity * 0.8})`
-            );
-            grad.addColorStop(
-              1,
-              `hsla(${hue2}, ${saturation}, ${lightness}, ${opacity * 0.8})`
-            );
+            grad.addColorStop(0, `rgba(251, 152, 27, ${opacity * 0.85})`); // #FB981B
+            grad.addColorStop(1, `rgba(255, 192, 108, ${opacity * 0.85})`); // #FFC06C
             ctx.strokeStyle = grad;
 
             ctx.lineWidth = p1.scale * 0.8;
@@ -162,8 +155,8 @@ const drawFractalsLayer = (
     }
     nodesToDraw.forEach((node) => {
       if (node.alpha <= 0) return;
-      const hue = baseHue + (node.phi / (2 * Math.PI)) * hueRange;
-      ctx.fillStyle = `hsla(${hue}, ${saturation}, ${lightness}, ${node.alpha})`;
+      // Fixed orange fill for nodes
+      ctx.fillStyle = `rgba(251, 152, 27, ${node.alpha})`;
 
       ctx.save();
       ctx.translate(node.screenX, node.screenY);

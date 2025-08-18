@@ -89,7 +89,7 @@ const NoticeCard = () => {
           <Text
             fontSize={{ base: "lg", md: "xl" }}
             fontWeight="bold"
-            color={isDark ? "whiteAlpha.800" : "blackAlpha.800"}
+            color={isDark ? "whiteAlpha.800" : "#692B13"}
             ml={2}
           >
             공지사항
