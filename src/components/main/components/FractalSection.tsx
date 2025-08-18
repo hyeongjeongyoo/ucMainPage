@@ -20,13 +20,13 @@ const FractalSection = ({ mouse }: FractalSectionProps) => {
   const isDark = colorMode === "dark";
 
   const gradient = isDark
-    ? "linear-gradient(to right, hsl(184, 51%, 70%), hsl(204, 51%, 75%), hsl(224, 51%, 80%))"
-    : "linear-gradient(to right, hsl(184, 51%, 40%), hsl(204, 51%, 45%), hsl(224, 51%, 50%))";
+    ? "linear-gradient(180deg, hsl(172, 68.50%, 80%), hsl(64, 100%, 82.70%), hsl(37, 100%, 65%))"
+    : "linear-gradient(to right, hsl(172, 24.80%, 45.90%), hsl(64, 100.00%, 50.40%), hsl(41, 100.00%, 52.40%))";
 
   return (
     <Flex
       display={{ base: "none", lg: "flex" }}
-      flex="0 0 45%"
+      flex="0 0 57%"
       h="97vh"
       justifyContent="center"
       alignItems="center"

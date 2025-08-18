@@ -93,7 +93,7 @@ export function MenuItem({
           href={menuUrl}
           display="block"
           py={6}
-          fontSize={{ base: "xs", md: "sm", lg: "md" }}
+          fontSize="18px"
           fontWeight={isRoot ? "bold" : "medium"}
           color={topLevelColor}
           position="relative"

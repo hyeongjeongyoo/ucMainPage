@@ -1,6 +1,6 @@
 "use client";
 
-import { Box, Button, Flex, Heading, Icon, Text } from "@chakra-ui/react";
+import { Box, Flex, Heading, Icon, Text } from "@chakra-ui/react";
 import {
   motion,
   Variants,
@@ -63,7 +63,6 @@ const MainContent = ({ mouse }: MainContentProps) => {
     el: DOMRect | null;
     win: { width: number; height: number };
   }>({ el: null, win: { width: 0, height: 0 } });
-  const [gradientStyle, setGradientStyle] = useState("");
   const [isOverflowVisible, setOverflowVisible] = useState(false);
   const [isButtonHovered, setButtonHovered] = useState(false);
 
@@ -89,24 +88,13 @@ const MainContent = ({ mouse }: MainContentProps) => {
   );
 
   const baseColor = { r: 41, g: 125, b: 131 };
-  const hue = useTransform(mouse.x, [0, 1], [200, 240]);
-  const lightness = useTransform(mouse.y, [0, 1], [0.3, 0.4]);
+  const hue = useTransform(mouse.x, [0, 1], [30, 40]);
+  const lightness = useTransform(mouse.y, [0, 1], [0.5, 0.6]);
 
   const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px, hsl(${hue}, 90%, ${useTransform(
     lightness,
     (l) => l * 100
   )}%), rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1) 70%)`;
-
-  useEffect(() => {
-    // Set the initial value on mount
-    setGradientStyle(background.get());
-
-    // Subscribe to subsequent changes
-    const unsubscribe = background.on("change", (latest) => {
-      setGradientStyle(latest);
-    });
-    return () => unsubscribe();
-  }, [background]);
 
   const rotateX = useTransform(mouse.y, [0, 1], [8, -8]);
   const rotateY = useTransform(mouse.x, [0, 1], [-8, 8]);
@@ -138,6 +126,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
             fontWeight="900"
             lineHeight="1.1"
             variants={itemVariants}
+            color="#0D344E"
           >
             <motion.span
               variants={typingContainerVariants}
@@ -155,12 +144,21 @@ const MainContent = ({ mouse }: MainContentProps) => {
             fontSize={{ base: "7xl", md: "8xl", lg: "9xl" }}
             fontWeight="900"
             lineHeight="1"
-            bgGradient={gradientStyle}
-            bgClip="text"
-            color="transparent"
             variants={itemVariants}
             ref={headingRef}
-            style={{ rotateX, rotateY }}
+            style={{
+              rotateX,
+              rotateY,
+              backgroundImage: background as unknown as string,
+              WebkitBackgroundClip: "text",
+              backgroundClip: "text",
+              color: "transparent",
+              willChange: "transform, background-image",
+              WebkitTransform: "translateZ(0)",
+              transform: "translateZ(0)",
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+            }}
           >
             <motion.span
               variants={typingContainerVariants}
@@ -193,7 +191,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
               ))}
             </motion.span>
             <MotionBox mt={6} variants={itemVariants}>
-              <MotionFlex
+              {/* <MotionFlex
                 display="inline-flex"
                 bg="rgb(41, 125, 131)"
                 color="white"
@@ -280,7 +278,67 @@ const MainContent = ({ mouse }: MainContentProps) => {
                     <Icon as={ChevronRightIcon} color="rgb(41, 125, 131)" />
                   </Box>
                 </motion.div>
-              </MotionFlex>
+              </MotionFlex> */}
+              <Flex mt={3} gap={2} wrap="wrap">
+                {[
+                  "자가진단 하러가기",
+                  "개인 상담 신청",
+                  "집단 상담 신청",
+                  "성고충",
+                  "심리검사",
+                ].map((label) => (
+                  <MotionFlex
+                    key={label}
+                    display="inline-flex"
+                    bg="#fb981b"
+                    color="white"
+                    borderRadius="full"
+                    align="center"
+                    py={0}
+                    px={3}
+                    initial="visible"
+                    whileHover="hover"
+                    variants={{
+                      visible: { x: 0 },
+                      hover: {
+                        x: 5,
+                        transition: {
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 15,
+                        },
+                      },
+                    }}
+                  >
+                    <Box flex={1} py={2} whiteSpace="nowrap" overflow="visible">
+                      <motion.div
+                        style={{ display: "inline-block" }}
+                        variants={{
+                          visible: {
+                            clipPath: "inset(0 0% 0 0)",
+                            transition: { duration: 0.3, ease: "easeInOut" },
+                          },
+                          hover: { transition: { staggerChildren: 0.05 } },
+                        }}
+                      >
+                        {label.split("").map((char, index) => (
+                          <motion.span
+                            key={index}
+                            style={{ display: "inline-block" }}
+                            variants={{
+                              hover: { y: [0, -5, 0] },
+                              visible: { y: 0 },
+                            }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                          >
+                            {char === " " ? "\u00A0" : char}
+                          </motion.span>
+                        ))}
+                      </motion.div>
+                    </Box>
+                  </MotionFlex>
+                ))}
+              </Flex>
             </MotionBox>
           </MotionText>
         </MotionBox>

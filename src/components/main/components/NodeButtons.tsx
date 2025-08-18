@@ -1,6 +1,6 @@
 import { Box, Button } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 const MotionButton = motion(Button);
 
@@ -13,72 +13,207 @@ interface ButtonPosition {
 
 interface NodeButtonsProps {
   buttonPositions: ButtonPosition[];
+  onHoverChange?: (hovering: boolean) => void;
 }
 
-export const NodeButtons = ({ buttonPositions }: NodeButtonsProps) => {
-  const buttonTexts = ["About", "Projects", "Skills", "Contact", "Blog"];
+export const NodeButtons = ({
+  buttonPositions,
+  onHoverChange,
+}: NodeButtonsProps) => {
+  const buttonTexts = [
+    "자가진단",
+    "개인 상담 신청",
+    "집단 상담 신청",
+    "성고충",
+    "심리검사",
+  ];
   const [isInitialRender, setIsInitialRender] = useState(true);
 
+  // Shuffle helper to randomize mapping once per mount
+  const shuffleArray = (arr: number[]) => {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+  const indexOrderRef = useRef<number[] | null>(null);
+  if (!indexOrderRef.current) {
+    indexOrderRef.current = shuffleArray([...Array(buttonTexts.length).keys()]);
+  }
+  const indexOrder = indexOrderRef.current;
+
+  const baseSizesRef = useRef<{ w: number; h: number }[] | null>(null);
+  if (!baseSizesRef.current) {
+    baseSizesRef.current = buttonTexts.map(() => ({
+      w: Math.round(80 + Math.random() * 20),
+      h: Math.round(34 + Math.random() * 10),
+    }));
+  }
+  const baseSizes = baseSizesRef.current;
+
+  const descriptionByLabel: Record<string, string> = {
+    "집단 상담 신청": "함께 이야기하고, 함께 자라는 시간입니다.",
+    "개인 상담 신청":
+      "혼자 끙끙대지 말고, 안전한 공간에서 가볍게 시작해 보세요.",
+    심리검사: "현재 나의 마음 상태를 간단히 살펴볼 수 있는 도구입니다.",
+    자가진단: "현재 나의 마음 상태를 간단히 살펴볼 수 있는 도구입니다.",
+    성고충: "성 관련 어려움을 안전하게 해결할 수 있어요.",
+  };
+  const restMinWidthByText: Record<string, number> = {
+    "개인 상담 신청": 180,
+    "집단 상담 신청": 180,
+  };
+
   useEffect(() => {
-    // 첫 렌더링 후 애니메이션을 활성화하기 위한 딜레이
-    const timer = setTimeout(() => {
-      setIsInitialRender(false);
-    }, 100);
+    const timer = setTimeout(() => setIsInitialRender(false), 100);
     return () => clearTimeout(timer);
   }, []);
 
   return (
     <Box
       position="absolute"
+      zIndex={3}
       top={0}
       left={0}
       right={0}
       bottom={0}
-      pointerEvents="none"
+      pointerEvents="auto"
     >
       {buttonTexts.map((text, index) => {
-        const position = buttonPositions[index] || {
+        const mappedIndex = indexOrder[index] ?? index;
+        const position = buttonPositions?.[mappedIndex] ?? {
           x: 0,
           y: 0,
           alpha: 0,
           scale: 1,
         };
+        const { w, h } = baseSizes[index] || { w: 200, h: 50 };
+        const minWForText = restMinWidthByText[text] ?? 140;
+        const restW = Math.max(w, minWForText);
+        const restH = Math.max(h, 44);
 
         return (
-          <MotionButton
+          <motion.div
             key={text}
-            position="absolute"
-            pointerEvents={position.alpha > 0.3 ? "auto" : "none"}
+            style={{
+              position: "absolute",
+              zIndex: 3,
+              pointerEvents: position.alpha > 0.3 ? "auto" : "none",
+            }}
             initial={isInitialRender ? { scale: 0, opacity: 0 } : false}
             animate={{
-              x: position.x - 50,
-              y: position.y - 20,
+              x: position.x,
+              y: position.y,
               opacity: position.alpha,
               scale: position.scale,
             }}
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 20,
-            }}
-            whileHover={{
-              scale: position.scale * 1.1,
-              transition: { duration: 0.2 },
-            }}
-            variant="ghost"
-            size="md"
-            color="teal.200"
-            _hover={{
-              bg: "rgba(129, 230, 217, 0.12)",
-              color: "teal.100",
-              transform: "translateY(-2px)",
-            }}
-            style={{
-              backdropFilter: "blur(8px)",
-            }}
+            transition={{ type: "spring", stiffness: 200, damping: 10 }}
           >
-            {text}
-          </MotionButton>
+            <MotionButton
+              variant="ghost"
+              p={0}
+              lineHeight="normal"
+              display="flex"
+              alignItems="center" // ★ 수직 상단
+              justifyContent="center" // ★ 수평 좌측
+              color="#fb981b"
+              bg="rgba(255,255,255,0.75)"
+              boxShadow="0 0 0 rgba(0,0,0,0)"
+              style={{
+                backdropFilter: "blur(8px)",
+                overflow: "hidden",
+                display: "flex",
+                transformOrigin: "0% 0%",
+                minWidth: minWForText,
+                minHeight: 44,
+              }}
+              initial="rest"
+              animate="rest"
+              whileHover="hover"
+              onHoverStart={() => onHoverChange?.(true)}
+              onHoverEnd={() => onHoverChange?.(false)}
+              variants={{
+                rest: {
+                  x: 0,
+                  y: 0,
+                  width: restW,
+                  height: restH,
+                  borderRadius: 24,
+                },
+                hover: {
+                  x: 0,
+                  y: 0,
+                  width: 350,
+                  height: 130,
+                  borderRadius: 24,
+                  boxShadow: "0 10px 24px rgba(13,52,78,.18)",
+                  background: "rgba(255,255,255,.98)",
+                  alignItems: "flex-start",
+                  justifyContent: "flex-start",
+                },
+              }}
+            >
+              <motion.div
+                style={{
+                  width: "100%",
+                  pointerEvents: "none",
+                  paddingLeft: 12,
+                }}
+              >
+                <motion.div
+                  style={{ display: "flex", width: "100%" }}
+                  variants={{
+                    rest: { justifyContent: "center" },
+                    hover: { justifyContent: "flex-start" },
+                  }}
+                >
+                  <Box
+                    as="div"
+                    fontWeight={800}
+                    fontSize="16px"
+                    color="#0d344e"
+                    py={5}
+                    m={0}
+                    whiteSpace="nowrap"
+                  >
+                    {text}
+                  </Box>
+                </motion.div>
+                <motion.div
+                  style={{ overflow: "hidden", width: "100%" }}
+                  variants={{ hover: { height: "auto", opacity: 1 } }}
+                  initial={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2, ease: "easeOut" }}
+                >
+                  <Box
+                    as="div"
+                    fontSize="14px"
+                    lineHeight="1.2"
+                    color="#0d344e"
+                    textAlign="left"
+                    mt={0}
+                  >
+                    {descriptionByLabel[text]}
+                  </Box>
+                  <motion.span
+                    style={{
+                      position: "absolute",
+                      right: 20,
+                      bottom: 20,
+                      fontWeight: 700,
+                      color: "#0d344e",
+                    }}
+                    variants={{ hover: { opacity: 1, y: 0 } }}
+                    initial={{ opacity: 0, y: 4 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    More &gt;
+                  </motion.span>
+                </motion.div>
+              </motion.div>
+            </MotionButton>
+          </motion.div>
         );
       })}
     </Box>
