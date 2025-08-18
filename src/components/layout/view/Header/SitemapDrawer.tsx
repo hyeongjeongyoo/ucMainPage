@@ -29,6 +29,7 @@ import {
   User2Icon,
   LogOutIcon,
 } from "lucide-react";
+import { AiFillHome } from "react-icons/ai";
 import { useRecoilValue } from "recoil";
 import { authState, useAuthActions } from "@/stores/auth";
 import { useRouter } from "next/navigation";
@@ -54,18 +55,6 @@ export const SitemapDrawer = memo(
     height,
   }: SitemapDrawerProps) => {
     const router = useRouter();
-
-    // 모바일과 데스크톱에서 다른 푸터 텍스트 표시
-    const footerText = useBreakpointValue({
-      base: (
-        <>
-          아르피나의 특별한 순간,
-          <br />
-          SNS에서 실시간으로 확인하세요
-        </>
-      ),
-      md: "아르피나의 특별한 순간, SNS에서 실시간으로 확인하세요",
-    });
 
     const [selectedCategoryKey, setSelectedCategoryKey] = useState<
       number | null
@@ -155,7 +144,10 @@ export const SitemapDrawer = memo(
             bg={isDark ? "rgba(0,0,0,0.7)" : "rgba(255,255,255,0.7)"}
           />
           <Drawer.Positioner>
-            <Drawer.Content bg={isDark ? "gray.800" : "white"} boxShadow="none">
+            <Drawer.Content
+              bg={isDark ? "gray.800" : "#fffdfa"}
+              boxShadow="none"
+            >
               <Flex
                 as="header"
                 align="center"
@@ -167,11 +159,16 @@ export const SitemapDrawer = memo(
                 <Flex
                   align="center"
                   justify="space-between"
-                  maxW={{ base: "90%", "2xl": "1600px" }}
+                  maxW={{ base: "90%" }}
                   w="full"
                 >
-                  <Link as={NextLink} href="/" onClick={onClose}>
-                    <Image
+                  <Link
+                    as={NextLink}
+                    href="/"
+                    onClick={onClose}
+                    aria-label="Go to home"
+                  >
+                    {/* <Image
                       src={
                         isDark
                           ? "/images/logo/logo_w.png"
@@ -180,7 +177,13 @@ export const SitemapDrawer = memo(
                       width={width}
                       height={height}
                       alt="logo"
-                    />
+                    /> */}
+                    <Box as="span" display="inline-flex" alignItems="center">
+                      <AiFillHome
+                        color={isDark ? "#ffffff" : "#692B13"}
+                        size={height * 1.2}
+                      />
+                    </Box>
                   </Link>
                   <HStack>
                     {/* <Image
@@ -231,7 +234,7 @@ export const SitemapDrawer = memo(
                             flex={1}
                             justifyContent="center"
                             variant="solid"
-                            colorPalette="blue"
+                            colorPalette="orange"
                             onClick={() => handleNavigate("/signup")}
                             size="xs"
                           >
@@ -306,7 +309,7 @@ export const SitemapDrawer = memo(
                       as="aside"
                       w="full"
                       maxW="1200px"
-                      bg={isDark ? "gray.800" : "white"}
+                      bg={isDark ? "gray.800" : "#fffdfa"}
                       p={10}
                       gap={8}
                       align="flex-start"
@@ -324,35 +327,6 @@ export const SitemapDrawer = memo(
                             cursor="pointer"
                             position="relative"
                             zIndex={2}
-                            _after={{
-                              content: '""',
-                              position: "absolute",
-                              bottom: "-8px",
-                              left: "55px",
-                              transform: "translateX(-50%)",
-                              width: "120px",
-                              height: "20px",
-                              bg:
-                                selectedCategoryKey === menu.id
-                                  ? "rgba(224, 225, 255, 0.5)"
-                                  : "rgba(224, 225, 255, 0)",
-                              borderRadius: "1px",
-                              transition: "all 0.3s ease",
-                              zIndex: 1,
-                            }}
-                            _hover={{
-                              _after: {
-                                content: '""',
-                                position: "absolute",
-                                bottom: "-8px",
-                                left: "55px",
-                                transform: "translateX(-50%)",
-                                width: "120px",
-                                height: "20px",
-                                bg: "rgba(224, 225, 255, 0.5)",
-                                borderRadius: "1px",
-                              },
-                            }}
                             w="full"
                             transition="all 0.2s ease"
                             mb={6}
@@ -364,6 +338,9 @@ export const SitemapDrawer = memo(
                           {menu.children && menu.children.length > 0 && (
                             <Flex
                               wrap="wrap"
+                              bg="rgba(251, 152, 27, 0.1)"
+                              borderRadius="10px"
+                              p={4}
                               gap={
                                 menu.children.some(
                                   (child) =>
@@ -462,31 +439,7 @@ export const SitemapDrawer = memo(
                   alignItems="center"
                   target="_blank"
                   rel="noopener noreferrer"
-                >
-                  <HStack gap={3} align="center">
-                    <Image
-                      src="/images/icons/instagram_icon.png"
-                      alt="Instagram"
-                      width={32}
-                      height={32}
-                    />
-                    <Box
-                      style={{
-                        background:
-                          "linear-gradient(90deg, #0C8EA4 0%, #2E3192 100%)",
-                        WebkitBackgroundClip: "text",
-                        WebkitTextFillColor: "transparent",
-                        backgroundClip: "text",
-                        color: "transparent",
-                      }}
-                      fontSize="sm"
-                      fontFamily="paperlogy"
-                      fontWeight="bold"
-                    >
-                      {footerText}
-                    </Box>
-                  </HStack>
-                </Link>
+                ></Link>
               </Flex>
             </Drawer.Content>
           </Drawer.Positioner>
