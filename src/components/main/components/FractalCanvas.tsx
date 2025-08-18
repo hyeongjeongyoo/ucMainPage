@@ -108,7 +108,7 @@ const drawFractalsLayer = (
   isDark: boolean
 ) => {
   const baseHue = 184;
-  const hueRange = -140; // sweep downward from 184° toward ~37° (#FFD194)
+  const hueRange = -150; // sweep downward from 184° toward ~37° (#FFD194)
   const saturation = "51%";
   const lightness = isDark ? "45%" : "45%";
 

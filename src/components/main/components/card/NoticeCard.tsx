@@ -83,7 +83,7 @@ const NoticeCard = () => {
           px={1}
           w="full"
         >
-          <Box bg="rgb(255, 195, 85)" borderRadius="full" color="white" p={1}>
+          <Box bg="#fb981b" borderRadius="full" color="white" p={1}>
             <LuBell size={18} />
           </Box>
           <Text
