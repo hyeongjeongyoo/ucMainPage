@@ -240,7 +240,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
                     gap: 6,
                   }}
                 >
-                  바로가기
+                  바로가기 
                   <Icon
                     as={ChevronsRightIcon}
                     color="#fb981b"
