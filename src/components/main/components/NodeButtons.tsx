@@ -114,7 +114,12 @@ export const NodeButtons = ({
               opacity: effectivePosition.alpha,
               scale: effectivePosition.scale,
             }}
-            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            transition={{
+              x: { type: "tween", duration: 0 },
+              y: { type: "tween", duration: 0 },
+              scale: { type: "tween", duration: 0 },
+              opacity: { type: "tween", ease: "easeOut", duration: 0.18 },
+            }}
           >
             <MotionButton
               variant="ghost"
