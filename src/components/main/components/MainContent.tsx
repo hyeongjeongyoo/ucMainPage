@@ -8,7 +8,7 @@ import {
   MotionValue,
   useMotionTemplate,
 } from "framer-motion";
-import { ChevronRightIcon } from "lucide-react";
+import { ChevronsRightIcon } from "lucide-react";
 import NoticeCard from "./card/NoticeCard";
 import { useState, useEffect, useRef } from "react";
 
@@ -65,6 +65,7 @@ const MainContent = ({ mouse }: MainContentProps) => {
   }>({ el: null, win: { width: 0, height: 0 } });
   const [isOverflowVisible, setOverflowVisible] = useState(false);
   const [isButtonHovered, setButtonHovered] = useState(false);
+  const [isExpanded, setExpanded] = useState(false);
 
   useEffect(() => {
     const measure = () => {
@@ -88,10 +89,10 @@ const MainContent = ({ mouse }: MainContentProps) => {
   );
 
   const baseColor = { r: 251, g: 152, b: 27 };
-  const hue = useTransform(mouse.x, [0, 1], [25, 35]);
+  const hue = useTransform(mouse.x, [0, 1], [25, 30]);
   const lightness = useTransform(mouse.y, [0, 1], [0.4, 0.5]);
 
-  const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px, #FFC06C 0%, rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1) 70%)`;
+  const background = useMotionTemplate`radial-gradient(circle at ${gradientX}px ${gradientY}px,rgb(239, 211, 50) 0%, rgba(${baseColor.r}, ${baseColor.g}, ${baseColor.b}, 1) 70%)`;
 
   const rotateX = useTransform(mouse.y, [0, 1], [8, -8]);
   const rotateY = useTransform(mouse.x, [0, 1], [-8, 8]);
@@ -119,15 +120,15 @@ const MainContent = ({ mouse }: MainContentProps) => {
         >
           <MotionHeading
             as="h1"
-            fontSize={{ base: "6xl", md: "7xl", lg: "8xl" }}
+            fontSize={{ base: "5xl", md: "6xl", lg: "7xl" }}
             fontWeight="900"
             lineHeight="1.1"
             variants={itemVariants}
-            color="#EF8832"
+            color="#7D6F4E"
           >
             <motion.span
               variants={typingContainerVariants}
-              style={{ display: "inline-block" }}
+              style={{ display: "inline-block", marginBottom: 6 }}
             >
               {mainTitle.split("").map((char, i) => (
                 <motion.span key={i} variants={typingLetterVariants}>
@@ -169,10 +170,10 @@ const MainContent = ({ mouse }: MainContentProps) => {
             </motion.span>
           </MotionHeading>
           <MotionText
-            mt={6}
+            mt={5}
             fontSize={{ base: "lg", md: "xl" }}
-            maxW="2xl"
-            color="#EF8832"
+            maxW="3xl"
+            color="#3A3435"
             variants={itemVariants}
           >
             <motion.span
@@ -188,116 +189,111 @@ const MainContent = ({ mouse }: MainContentProps) => {
                 </motion.span>
               ))}
             </motion.span>
-            <MotionBox mt={6} variants={itemVariants}>
-              {/* <MotionFlex
+            <MotionFlex
+              mt={3}
+              align="center"
+              gap={2}
+              wrap="nowrap"
+              initial="collapsed"
+              animate={isExpanded ? "expanded" : "collapsed"}
+              onHoverEnd={() => setExpanded(false)}
+              style={{ overflow: "hidden" }}
+              variants={{
+                collapsed: {},
+                expanded: { gap: 0 },
+              }}
+            >
+              <MotionBox
                 display="inline-flex"
-                bg="rgb(41, 125, 131)"
-                color="white"
+                alignItems="center"
+                justifyContent="center"
                 borderRadius="full"
-                align="center"
-                py={0}
-                pr={1}
-                overflow={isOverflowVisible ? "visible" : "hidden"}
-                cursor="none"
+                onHoverStart={() => setExpanded(true)}
                 variants={{
-                  hidden: { width: "44px" },
-                  visible: {
-                    width: "210px",
+                  collapsed: {
+                    opacity: 1,
+                    scale: 1,
+                    width: 100,
+                    marginRight: 8,
+                  },
+                  expanded: {
+                    opacity: 0,
+                    scale: 0.95,
                     x: 0,
-                    transition: { duration: 0.6, ease: "easeInOut" },
+                    width: 0,
+                    marginRight: 0,
                   },
-                  hover: {
-                    width: "210px",
-                    x: 5,
-                    transition: { type: "spring", stiffness: 300, damping: 15 },
-                  },
-                }}
-                animate={isButtonHovered ? "hover" : "visible"}
-                onHoverStart={() => setButtonHovered(true)}
-                onHoverEnd={() => setButtonHovered(false)}
-                onAnimationComplete={(definition) => {
-                  if (definition === "visible") {
-                    setOverflowVisible(true);
-                  }
                 }}
               >
-                <Box
-                  flex={1}
-                  pl={6}
-                  py={2}
-                  whiteSpace="nowrap"
-                  overflow="visible"
-                >
-                  <motion.div
-                    style={{ display: "inline-block" }}
-                    animate={isButtonHovered ? "hover" : "visible"}
-                    variants={{
-                      visible: {
-                        clipPath: "inset(0 0% 0 0)",
-                        transition: {
-                          duration: 0.3,
-                          ease: "easeInOut",
-                        },
-                      },
-                      hover: {
-                        transition: { staggerChildren: 0.05 },
-                      },
-                    }}
-                  >
-                    {"자가진단 하러가기".split("").map((char, index) => (
-                      <motion.span
-                        key={index}
-                        style={{ display: "inline-block" }}
-                        variants={{
-                          hover: { y: [0, -5, 0] },
-                          visible: { y: 0 },
-                        }}
-                        transition={{
-                          duration: 0.3,
-                          ease: "easeInOut",
-                        }}
-                      >
-                        {char === " " ? "\u00A0" : char}
-                      </motion.span>
-                    ))}
-                  </motion.div>
-                </Box>
-                <motion.div
-                  style={{ display: "flex" }}
-                  variants={{
-                    hidden: { scale: 0 },
-                    visible: {
-                      scale: 1,
-                      transition: { delay: 0.3, duration: 0.4 },
-                    },
+                <MotionBox
+                  animate={{ x: [0, 10] }}
+                  transition={{
+                    duration: 1.8,
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    ease: "easeInOut",
+                  }}
+                  style={{
+                    whiteSpace: "nowrap",
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: 6,
                   }}
                 >
-                  <Box bg="white" borderRadius="full" ml={1} p={1}>
-                    <Icon as={ChevronRightIcon} color="rgb(41, 125, 131)" />
-                  </Box>
-                </motion.div>
-              </MotionFlex> */}
-              <Flex mt={3} gap={2} wrap="wrap">
+                  바로가기
+                  <Icon
+                    as={ChevronsRightIcon}
+                    color="#fb981b"
+                    strokeWidth={2.75}
+                  />
+                </MotionBox>
+              </MotionBox>
+              <motion.div
+                style={{ display: "flex", gap: 8, whiteSpace: "nowrap" }}
+                variants={{
+                  collapsed: { maxWidth: 0, opacity: 0, x: -8 },
+                  expanded: { maxWidth: 1000, opacity: 1, x: 0 },
+                }}
+                transition={{ type: "tween", duration: 0.35, ease: "easeOut" }}
+              >
                 {[
                   "자가진단 하러가기",
                   "개인 상담 신청",
                   "집단 상담 신청",
                   "성고충",
                   "심리검사",
-                ].map((label) => (
+                ].map((label, idx) => (
                   <MotionFlex
                     key={label}
                     display="inline-flex"
-                    bg="#FD7300"
-                    color="#ffffff"
+                    border="1px solid #fb981b"
+                    color="#fb981b"
+                    style={{
+                      transition:
+                        "background-color 0.25s ease, transform 0.2s ease",
+                    }}
                     borderRadius="full"
                     align="center"
                     py={0}
                     px={3}
-                    initial="visible"
+                    h="36px"
+                    initial="collapsed"
+                    animate={isExpanded ? "expanded" : "collapsed"}
                     whileHover="hover"
+                    custom={idx}
                     variants={{
-                      visible: { x: 0 },
+                      collapsed: { opacity: 0, x: -12, scale: 0.98 },
+                      expanded: (i: number) => ({
+                        opacity: 1,
+                        x: 0,
+                        scale: 1,
+                        transition: {
+                          type: "spring",
+                          stiffness: 420,
+                          damping: 28,
+                          delay: i * 0.12,
+                        },
+                      }),
                       hover: {
                         x: 5,
                         transition: {
@@ -308,9 +304,20 @@ const MainContent = ({ mouse }: MainContentProps) => {
                       },
                     }}
                   >
-                    <Box flex={1} py={2} whiteSpace="nowrap" overflow="visible">
+                    <Box
+                      flex={1}
+                      whiteSpace="nowrap"
+                      overflow="visible"
+                      display="flex"
+                      alignItems="center"
+                      h="100%"
+                    >
                       <motion.div
-                        style={{ display: "inline-block" }}
+                        style={{
+                          display: "inline-flex",
+                          lineHeight: 1,
+                          alignItems: "center",
+                        }}
                         variants={{
                           visible: {
                             clipPath: "inset(0 0% 0 0)",
@@ -336,8 +343,8 @@ const MainContent = ({ mouse }: MainContentProps) => {
                     </Box>
                   </MotionFlex>
                 ))}
-              </Flex>
-            </MotionBox>
+              </motion.div>
+            </MotionFlex>
           </MotionText>
         </MotionBox>
       </Flex>

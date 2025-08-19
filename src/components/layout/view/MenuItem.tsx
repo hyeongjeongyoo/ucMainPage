@@ -54,19 +54,19 @@ export function MenuItem({
         ? "blue.200"
         : "white"
       : isActive
-      ? "#451605"
+      ? "#4A3A14"
       : isCurrentlyHovered
-      ? "#451605"
-      : "#451605"
+      ? "#4A3A14"
+      : "#4A3A14"
     : isDark
     ? isActive
       ? "blue.200"
       : "gray.300"
     : isActive
-    ? "#451605"
-    : "#451605";
+    ? "#4A3A14"
+    : "#4A3A14";
 
-  const topLevelHoverFocusColor = isDark ? "blue.200" : "#451605";
+  const topLevelHoverFocusColor = isDark ? "blue.200" : "#4A3A14";
 
   const childColor = isDark ? "gray.300" : "#373636";
   const childHoverFocusColor = isDark ? "blue.200" : "#2E3192";

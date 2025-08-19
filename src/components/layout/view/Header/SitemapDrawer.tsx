@@ -166,7 +166,6 @@ export const SitemapDrawer = memo(
                     as={NextLink}
                     href="/"
                     onClick={onClose}
-                    aria-label="Go to home"
                   >
                     {/* <Image
                       src={
@@ -178,12 +177,6 @@ export const SitemapDrawer = memo(
                       height={height}
                       alt="logo"
                     /> */}
-                    <Box as="span" display="inline-flex" alignItems="center">
-                      <AiFillHome
-                        color={isDark ? "#ffffff" : "#692B13"}
-                        size={height * 1.2}
-                      />
-                    </Box>
                   </Link>
                   <HStack>
                     {/* <Image

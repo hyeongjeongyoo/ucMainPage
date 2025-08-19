@@ -108,7 +108,7 @@ const drawFractalsLayer = (
   isDark: boolean
 ) => {
   const baseHue = 20;
-  const hueRange = 0; // fixed hue; gradient second stop uses #FFC06C
+  const hueRange = 0;
   const saturation = "57%";
   const lightness = isDark ? "45%" : "65%";
 
@@ -133,7 +133,7 @@ const drawFractalsLayer = (
           const opacity =
             (1 - distSqr / MAX_CONNECT_DISTANCE_SQR) * p1.alpha * p2.alpha;
           if (opacity > 0) {
-            // Fixed orange gradient from base orange to #FFC06C
+            // Fixed gradient from base orange to yellow (#FFFCA4)
             const grad = ctx.createLinearGradient(
               p1.screenX,
               p1.screenY,
@@ -141,7 +141,8 @@ const drawFractalsLayer = (
               p2.screenY
             );
             grad.addColorStop(0, `rgba(251, 152, 27, ${opacity * 0.85})`); // #FB981B
-            grad.addColorStop(1, `rgba(255, 192, 108, ${opacity * 0.85})`); // #FFC06C
+            //grad.addColorStop(1, `rgba(255, 192, 108, ${opacity * 0.85})`); // #FFC06C
+            grad.addColorStop(1, `rgba(255, 252, 164, ${opacity * 0.85})`); //rgb(255, 238, 0) (yellow)
             ctx.strokeStyle = grad;
 
             ctx.lineWidth = p1.scale * 0.8;

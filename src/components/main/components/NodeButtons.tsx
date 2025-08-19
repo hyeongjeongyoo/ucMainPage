@@ -28,6 +28,8 @@ export const NodeButtons = ({
     "심리검사",
   ];
   const [isInitialRender, setIsInitialRender] = useState(true);
+  const [hoveredIndices, setHoveredIndices] = useState<Set<number>>(new Set());
+  const frozenPositionsRef = useRef<Record<number, ButtonPosition>>({});
 
   // Shuffle helper to randomize mapping once per mount
   const shuffleArray = (arr: number[]) => {
@@ -88,6 +90,10 @@ export const NodeButtons = ({
           alpha: 0,
           scale: 1,
         };
+        const effectivePosition =
+          hoveredIndices.has(index) && frozenPositionsRef.current[index]
+            ? frozenPositionsRef.current[index]
+            : position;
         const { w, h } = baseSizes[index] || { w: 200, h: 50 };
         const minWForText = restMinWidthByText[text] ?? 140;
         const restW = Math.max(w, minWForText);
@@ -99,14 +105,14 @@ export const NodeButtons = ({
             style={{
               position: "absolute",
               zIndex: 3,
-              pointerEvents: position.alpha > 0.3 ? "auto" : "none",
+              pointerEvents: effectivePosition.alpha > 0.3 ? "auto" : "none",
             }}
             initial={isInitialRender ? { scale: 0, opacity: 0 } : false}
             animate={{
-              x: position.x,
-              y: position.y,
-              opacity: position.alpha,
-              scale: position.scale,
+              x: effectivePosition.x,
+              y: effectivePosition.y,
+              opacity: effectivePosition.alpha,
+              scale: effectivePosition.scale,
             }}
             transition={{ type: "spring", stiffness: 200, damping: 10 }}
           >
@@ -118,8 +124,8 @@ export const NodeButtons = ({
               alignItems="center" // ★ 수직 상단
               justifyContent="center" // ★ 수평 좌측
               color="#fb981b"
-              bg="rgba(255,255,255,0.75)"
-              boxShadow="0 0 0 rgba(0,0,0,0)"
+              //bg="rgba(255,255,255,0.75)"
+              boxShadow="0 0 0 rgba(0,0,0,0.5)"
               style={{
                 backdropFilter: "blur(8px)",
                 overflow: "hidden",
@@ -131,8 +137,22 @@ export const NodeButtons = ({
               initial="rest"
               animate="rest"
               whileHover="hover"
-              onHoverStart={() => onHoverChange?.(true)}
-              onHoverEnd={() => onHoverChange?.(false)}
+              onHoverStart={() => {
+                setHoveredIndices((prev) => {
+                  const next = new Set(prev);
+                  next.add(index);
+                  return next;
+                });
+                frozenPositionsRef.current[index] = position;
+              }}
+              onHoverEnd={() => {
+                setHoveredIndices((prev) => {
+                  const next = new Set(prev);
+                  next.delete(index);
+                  return next;
+                });
+                delete frozenPositionsRef.current[index];
+              }}
               variants={{
                 rest: {
                   x: 0,
@@ -147,7 +167,7 @@ export const NodeButtons = ({
                   width: 350,
                   height: 130,
                   borderRadius: 24,
-                  boxShadow: "0 10px 24px rgba(13,52,78,.18)",
+                  boxShadow: "0 5px 10px rgba(13,52,78,.18)",
                   background: "rgba(255,255,255,.98)",
                   alignItems: "flex-start",
                   justifyContent: "flex-start",
@@ -172,7 +192,8 @@ export const NodeButtons = ({
                     as="div"
                     fontWeight={800}
                     fontSize="16px"
-                    color="#EF8832"
+                    //color="#EF8832"
+                    color="#4A3A14"
                     py={5}
                     m={0}
                     whiteSpace="nowrap"
@@ -190,7 +211,7 @@ export const NodeButtons = ({
                     as="div"
                     fontSize="14px"
                     lineHeight="1.2"
-                    color="#451605"
+                    color="#4A3A14"
                     textAlign="left"
                     mt={0}
                   >
@@ -202,7 +223,7 @@ export const NodeButtons = ({
                       right: 20,
                       bottom: 20,
                       fontWeight: 700,
-                      color: "#451605",
+                      color: "#4A3A14",
                     }}
                     variants={{ hover: { opacity: 1, y: 0 } }}
                     initial={{ opacity: 0, y: 4 }}
