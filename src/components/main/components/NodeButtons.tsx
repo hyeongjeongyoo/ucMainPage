@@ -108,7 +108,7 @@ export const NodeButtons = ({
               opacity: position.alpha,
               scale: position.scale,
             }}
-            transition={{ type: "spring", stiffness: 200, damping: 10 }}
+            transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
           >
             <MotionButton
               variant="ghost"
@@ -118,7 +118,7 @@ export const NodeButtons = ({
               alignItems="center" // ★ 수직 상단
               justifyContent="center" // ★ 수평 좌측
               color="#fb981b"
-              bg="rgba(255,255,255,0.75)"
+              //bg="rgba(255,255,255,0.75)"
               boxShadow="0 0 0 rgba(0,0,0,0)"
               style={{
                 backdropFilter: "blur(8px)",
@@ -153,6 +153,7 @@ export const NodeButtons = ({
                   justifyContent: "flex-start",
                 },
               }}
+              transition={{ type: "tween", duration: 0.25, ease: "easeOut" }}
             >
               <motion.div
                 style={{
@@ -172,7 +173,7 @@ export const NodeButtons = ({
                     as="div"
                     fontWeight={800}
                     fontSize="16px"
-                    color="#0d344e"
+                    color="#3DAD5F"
                     py={5}
                     m={0}
                     whiteSpace="nowrap"
@@ -190,7 +191,7 @@ export const NodeButtons = ({
                     as="div"
                     fontSize="14px"
                     lineHeight="1.2"
-                    color="#0d344e"
+                    color="#3DAD5F"
                     textAlign="left"
                     mt={0}
                   >
@@ -202,7 +203,7 @@ export const NodeButtons = ({
                       right: 20,
                       bottom: 20,
                       fontWeight: 700,
-                      color: "#0d344e",
+                      color: "#3DAD5F",
                     }}
                     variants={{ hover: { opacity: 1, y: 0 } }}
                     initial={{ opacity: 0, y: 4 }}

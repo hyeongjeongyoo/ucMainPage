@@ -311,7 +311,7 @@ const CounselCard = () => {
         w="60px"
         h="60px"
         p={0}
-        bg={isDark ? "rgba(255,255,255,0.9)" : "rgb(41, 125, 131)"}
+        bg={isDark ? "rgba(255,255,255,0.9)" : "#3DAD5F"}
         color={isDark ? "black" : "white"}
         boxShadow="0 8px 12px 0 rgba(31, 38, 135, 0.20)"
         _hover={{ transform: "scale(1.05)" }}
